@@ -1,0 +1,71 @@
+
+int a,b,c,d,e,f,g,h,i,j,k,l,m = 0;
+void setup()                    // run once, when the sketch starts
+{
+  Serial.begin(57600);
+
+}
+
+void loop()                       // run over and over again
+{
+   if(Serial.available()>0)
+  {
+    char Perintah=Serial.read();
+    if(Perintah == '1')
+    {
+     i=1; char data[50];
+     while(i=1)
+     {
+     for(int r=0;r<5;r++)
+     {
+     
+       Serial.print("005 ");          
+       sprintf(data,"%03d %03d %03d %03d %03d %03d %03d %03d %03d %03d %03d %03d",a,b,c,d,e,f,g,h,j,k,l,m);
+       Serial.println(data);
+       a=a+r;
+       b=b+9;
+       c=(c+r+100)/3;
+       d=(d+10+c)/3;
+       e=(e+r+15)/3;
+       f=(f-r+30)/2;       
+       g=(g-r+150)/2;
+       h=(h-r+300)/2;
+       j=(j-r+100)/3;
+       k = k +r;
+       l = l  + r;
+       m = m + r;
+       delay(100);
+      
+ 
+     }
+      for(int r=5;r>=5;r--)
+     {
+       Serial.print("005 ");          
+       sprintf(data,"%03d %03d %03d %03d %03d %03d %03d %03d %03d %03d %03d %03d",a,b,c,d,e,f,g,h,j,k,l,m);
+       Serial.println(data);
+       a=a+r;
+       b=b+9;
+       c=(c-r+100)/3;
+       d=(d-10+c)/3;
+       e=(e-r+15)/3;
+       f=(f+r+30)/2;
+       g=(g+r+150)/2;
+       h=(h+r+300)/2;
+       j=(j+r+100)/3;
+       k = k - r - 4;
+       l = l - r - 5;
+       m = m - r - 6;
+       delay(100);
+     }
+     }
+    }
+    if(Perintah=='x')
+    {
+      i=0;
+      //Serial.println("Stop");
+      Serial.end();
+      return;
+      delay(1000);
+    }
+  }
+}

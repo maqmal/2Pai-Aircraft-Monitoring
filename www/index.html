@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>2Pai Payload Monitoring System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+        crossorigin="anonymous">
+</head>
+
+<body onload="RealTimeData()">
+    <div class="container" style="text-align:center;">
+        <h3 class="display-4">Data Parsing Succsess</h3>
+        <div style="text-align:center;">
+            <div id="DataRecive"></div>
+            <div id="header"></div>
+            <div id="latitude"></div>
+            <div id="longitude"></div>
+            <div id="humidity"></div>
+            <div id="temperature"></div>
+            <div id="acc_x"></div>
+            <div id="acc_y"></div>
+            <div id="acc_z"></div>
+            <div id="gyro_x"></div>
+            <div id="gyro_y"></div>
+            <div id="gyro_z"></div>
+        </div>
+    </div>
+    
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+    <!--Data js-->
+    <script src="app/data.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+</body>
+</html>
