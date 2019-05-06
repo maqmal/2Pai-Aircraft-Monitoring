@@ -27,11 +27,6 @@ baudPort.on('open', ()=>{
     },timeOut); 
 });
 
-// event yang munculin data dari arduino, pake 'data'
-parser.on('data',(data)=>{
-    console.log(data);
-});
-
 const express = require('express');
 const app = express();
 const server = require('http').createServer(app);
@@ -70,3 +65,21 @@ function parsingRawData (data) {
 		});
         return hasilParsing;
     }
+
+
+// Real-time cuaca
+const request = require('request');
+const argv = require('yargs').argv;
+let apiKey = '9697e661a188cb4621c5a52a23ca3907';
+let city = argv.c || 'Bandung';
+let url = `http://api.openweathermap.org/data/2.5/weather?q=${city}&units=imperial&appid=${apiKey}`
+
+request(url, function (err, response, body) {
+    if (err) {
+        console.log('error:', error);
+    } else {
+        let weather = JSON.parse(body)
+        let message = `It's ${weather.main.temp} degrees in ${weather.name}!`;
+        console.log(message);
+    }
+});
