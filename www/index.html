@@ -10,16 +10,30 @@
         integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
 </head>
 
 <body onload="RealTimeData()">
     <nav class="navbar navbar-light bg-dark">
         <span class="navbar-brand mb-0 h1 display-3" style="color:white">2PaiAirlines</span>
         <h3 class="display-3" id="date" style="color:white; font-size: 16px;"></h3>
+        <button onclick="getLocation()" type="button" class="btn btn-secondary">Cuaca</button>
+        <p id="cuaca" style="color:white"></p>
+        <div class="city-icon" style="color:white">
+                <div class="city-icon-holder" style="color:white">
+                <div id="city-name" style="color:white"></div>
+                <img src="" alt="" id="icon" style="color:white">
+                  </div>
+              </div>
+              
+              <div class="temperature" style="color:white">
+                <div id="temp" style="color:white"></div>
+              </div>
+              
+              <div class="humidity" style="color:white">
+                <div id="humidity-div" style="color:white"></div>
+              </div>
     </nav>
-    <br><br><br>
-    <div id="suhu"></div>
-    <br><br><br><br>
     <div class="container" style="text-align:center;">
         <h3 class="display-4">Data Parsing Succsess</h3>
         <div style="text-align:center;">
@@ -38,6 +52,9 @@
         </div>
     </div>
 
+   
+      
+      
 
     <script>
         var n = new Date();
@@ -49,13 +66,20 @@
         var d = n.getDate();
         document.getElementById("date").innerHTML = d + " " + m + ", " + y;
     </script>
+    
+    <!-- google maps -->
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyANkLfRNm2-1tREG2vlxL6MRpNJXGszb5M&callback=initMap">
+    </script>
+
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
     </script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
     </script>
+    
     <!--Data js-->
+    <script  src="weather/js/index.js"></script>
     <script src="app/data.js"></script>
     <script src="../index.js"></script>
     <script src="/socket.io/socket.io.js"></script>
