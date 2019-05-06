@@ -13,26 +13,29 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
 </head>
 
-<body onload="RealTimeData()">
+<body onload="RealTimeData();startTime();">
     <nav class="navbar navbar-light bg-dark">
         <span class="navbar-brand mb-0 h1 display-3" style="color:white">2PaiAirlines</span>
-        <h3 class="display-3" id="date" style="color:white; font-size: 16px;"></h3>
-        <button onclick="getLocation()" type="button" class="btn btn-secondary">Cuaca</button>
-        <p id="cuaca" style="color:white"></p>
+        <h3 class="display-3" id="date" style="color:white; font-size: 21px;"></h3>
+        <p id="cuaca" class="display-3" style="color:white; font-size: 16px;"></p>
         <div class="city-icon" style="color:white">
-                <div class="city-icon-holder" style="color:white">
-                <div id="city-name" style="color:white"></div>
+            <div class="city-icon-holder" style="color:white; padding-top: -12px;">
+                <div id="city-name" class="display-3" style="color:white; font-size: 17px;"></div>
                 <img src="" alt="" id="icon" style="color:white">
-                  </div>
-              </div>
-              
-              <div class="temperature" style="color:white">
-                <div id="temp" style="color:white"></div>
-              </div>
-              
-              <div class="humidity" style="color:white">
-                <div id="humidity-div" style="color:white"></div>
-              </div>
+            </div>
+        </div>
+
+        <div class="temperature" style="color:white;">
+            <h3 class="display-3" style="color:white; font-size: 16px;">Suhu</h3>
+            <div id="temp" style="color:white;"></div>
+        </div>
+
+        <div class="humidity" style="color:white;">
+            <h3 class="display-3" style="color:white; font-size: 16px;">Kelembapan</h3>
+            <div id="humidity-div" style="color:white;"></div>
+        </div>
+
+        <button onclick="getLocation()" type="button" class="btn btn-secondary">Refresh Cuaca</button>
     </nav>
     <div class="container" style="text-align:center;">
         <h3 class="display-4">Data Parsing Succsess</h3>
@@ -52,23 +55,39 @@
         </div>
     </div>
 
-   
-      
-      
-
     <script>
-        var n = new Date();
-        var y = n.getFullYear();
-        var m = n.getMonth() + 1;
-        var monthArr = ["January", "February", "March", "April", "May", "June", "July", "August", "September",
-            "October", "November", "December"];
-        var m = monthArr[m];
-        var d = n.getDate();
-        document.getElementById("date").innerHTML = d + " " + m + ", " + y;
+        function startTime(){
+            var today = new Date();
+            var weekday = new Array(7);
+            weekday[0] =  "Sun";
+            weekday[1] = "Mon";
+            weekday[2] = "Tue";
+            weekday[3] = "Wed";
+            weekday[4] = "Thur";
+            weekday[5] = "Fri";
+            weekday[6] = "Sat";
+            var hari = weekday[today.getDay()];
+            var m = today.getMonth() + 1;
+            var jam = today.getHours();
+            var menit = today.getMinutes();
+            menit = checkTime(menit);
+            var monthArr = ["January", "February", "March", "April", "May", "June", "July", "August", "September",
+                "October", "November", "December"
+            ];
+            var m = monthArr[m];
+            var d = today.getDate();
+            document.getElementById("date").innerHTML =  jam+":"+menit+"<br>"+hari+ ", "+ m + " " + +d + " ";
+            var t = setTimeout(startTime, 500);
+        }
+        function checkTime(i) {
+            if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+            return i;
+        }
     </script>
-    
+
     <!-- google maps -->
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyANkLfRNm2-1tREG2vlxL6MRpNJXGszb5M&callback=initMap">
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyANkLfRNm2-1tREG2vlxL6MRpNJXGszb5M&callback=initMap">
     </script>
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
@@ -77,9 +96,9 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
     </script>
-    
+
     <!--Data js-->
-    <script  src="weather/js/index.js"></script>
+    <script src="weather/js/index.js"></script>
     <script src="app/data.js"></script>
     <script src="../index.js"></script>
     <script src="/socket.io/socket.io.js"></script>
