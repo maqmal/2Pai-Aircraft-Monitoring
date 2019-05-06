@@ -27,11 +27,6 @@ baudPort.on('open', ()=>{
     },timeOut); 
 });
 
-// event yang munculin data dari arduino, pake 'data'
-parser.on('data',(data)=>{
-    console.log(data);
-});
-
 const express = require('express');
 const app = express();
 const server = require('http').createServer(app);
