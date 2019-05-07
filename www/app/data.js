@@ -1,3 +1,21 @@
+let succeed = document.getElementById("success");
+var param = {
+    humidity : 0,
+    temperature : 0,
+    setHumid : function (data){
+        this.humidity = parseFloat(data);
+    },
+    setTemp : function (data){
+        this.temperature = parseFloat(data)
+    },
+    getHumid : function (data){
+        return this.humidity;
+    },
+    getTemp : function (data){
+        return this.temperature;
+    }
+}
+
 function RealTimeData() {
     const socket = io.connect();
 
@@ -5,17 +23,158 @@ function RealTimeData() {
         console.log(data);
 
         document.getElementById("DataRecive").innerHTML = data.dataHasil;
+        succeed.innerHTML = "Data Parsing Succeed!";
 
-        $("#header").html(data.dataHasil[0]);
-        $("#latitude").html(data.dataHasil[1]);
-        $("#longitude").html(data.dataHasil[2]);
-        $("#humidity").html(data.dataHasil[3]);
-        $("#temperature").html(data.dataHasil[4]);
-        $("#acc_x").html(data.dataHasil[5]);
-        $("#acc_y").html(data.dataHasil[6]);
-        $("#acc_z").html(data.dataHasil[7]);
-        $("#gyro_x").html(data.dataHasil[8]);
-        $("#gyro_y").html(data.dataHasil[9]);
-        $("#gyro_z").html(data.dataHasil[10]);
+        param.setTemp(data.dataHasil[4]);
+        param.setHumid(data.dataHasil[3]);
     });
 }
+
+$(function(){
+    Highcharts.setOptions({
+        global: {
+            useUTC: false
+        }
+    });
+
+    chartTemp = new Highcharts.Chart({
+        chart: {
+            renderTo: 'chartTemp',
+            defaultSeriesType: 'spline',
+            events: {
+                load: function () {
+
+                    var series = this.series[0],
+                        shift = series.data.length > 25;
+                    setInterval(function () {
+                        var x = (new Date()).getTime(), // current time
+                            y = param.getTemp();
+                        series.addPoint([x, y], true, shift);
+                    }, 1000);
+                }
+            }
+        },
+        title: {
+            text: ''
+        },
+        xAxis: {
+            type: 'datetime',
+            tickPixelInterval: 150,
+            crosshair: true,
+            maxZoom: 20 * 1000,
+        },
+        yAxis: {
+            minPadding: 0.2,
+            maxPadding: 0.2,
+            crosshair: true,
+            title: {
+                text: 'Celcius',
+                margin: 5
+            }
+        },
+	    tooltip: {
+            valueSuffix: '°'
+        },
+	    plotOptions: {
+            spline: {
+                lineWidth: 4,
+                states: {
+                    hover: {
+                        lineWidth: 5
+                    }
+                },
+                marker: {
+                    enabled: false
+                }
+
+            }
+        },
+        series: [{
+            name: 'Temperature',
+            data: (function () {
+                var data = [],
+                    time = (new Date()).getTime(),
+                    i;
+
+                for (i = -19; i <= 0; i += 1) {
+                    data.push({
+                        x: time + i * 1000,
+                        y: param.getTemp()
+                    });
+                }
+                return data;
+            }())
+        }]
+    });
+
+    chartHumid = new Highcharts.Chart({
+        chart: {
+            renderTo: 'chartHumid',
+            defaultSeriesType: 'spline',
+            events: {
+                load: function () {
+
+                    var series = this.series[0],
+                        shift = series.data.length > 25;
+                    setInterval(function () {
+                        var x = (new Date()).getTime(), // current time
+                            y = param.getHumid();
+                        series.addPoint([x, y], true, shift);
+                    }, 1000);
+                }
+            }
+        },
+        title: {
+            text: ''
+        },
+        xAxis: {
+            type: 'datetime',
+            tickPixelInterval: 150,
+            crosshair: true,
+            maxZoom: 20 * 1000,
+        },
+        yAxis: {
+            minPadding: 0.2,
+            maxPadding: 0.2,
+            crosshair: true,
+            title: {
+                text: 'Humidity',
+                margin: 5
+            }
+        },
+	    tooltip: {
+            valueSuffix: '%'
+        },
+	    plotOptions: {
+            spline: {
+                lineWidth: 4,
+                states: {
+                    hover: {
+                        lineWidth: 5
+                    }
+                },
+                marker: {
+                    enabled: false
+                }
+
+            }
+        },
+        series: [{
+            name: 'Humidity',
+            color : '#CDDC39',
+            data: (function () {
+                var data = [],
+                    time = (new Date()).getTime(),
+                    i;
+
+                for (i = -19; i <= 0; i += 1) {
+                    data.push({
+                        x: time + i * 1000,
+                        y: param.getHumid()
+                    });
+                }
+                return data;
+            }())
+        }]
+    });
+});
