@@ -27,8 +27,16 @@ function RealTimeData() {
 
         param.setTemp(data.dataHasil[4]);
         param.setHumid(data.dataHasil[3]);
+        gaugeTemp.value = data.dataHasil[4];
     });
 }
+
+var gaugeTemp = new LinearGauge({
+    renderTo: 'gauge-id',
+    colorNumbers: 'red',
+    width: 100,
+    height: 300
+  }).draw();
 
 $(function(){
     Highcharts.setOptions({
@@ -178,3 +186,6 @@ $(function(){
         }]
     });
 });
+
+
+

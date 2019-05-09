@@ -12,7 +12,10 @@
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
     <link rel="stylesheet" href="weather/css/main.css">
+    <!-- Highchart -->
     <script src="https://code.highcharts.com/highcharts.js"></script>
+
+    <script src="//cdn.rawgit.com/Mikhus/canvas-gauges/gh-pages/download/2.1.5/all/gauge.min.js"></script>
 </head>
  
 <body onload="RealTimeData();startTime();">
@@ -45,6 +48,9 @@
 
         <div id="chartHumid"></div>
         <div id="chartTemp"></div>
+
+        <canvas id="gauge-id"></canvas>
+
     </div>
 
     <script>
