@@ -22,8 +22,8 @@ void loop()                       // run over and over again
        Serial.print("005 ");          
        sprintf(data,"%03d %03d %03d %03d %03d %03d %03d %03d %03d %03d %03d %03d",a,b,c,d,e,f,g,h,j,k,l,m);
        Serial.println(data);
-       a=a+r;
-       b=b+9;
+       a=-6.9;
+       b=107.61+b+0.9;
        c=(c+r+100)/3;
        d=(d+10+c)/3;
        e=(e+r+15)/3;
@@ -31,6 +31,7 @@ void loop()                       // run over and over again
        g=(g-r+150)/2;
        h=(h-r+300)/2;
        j=(j-r+100)/3;
+       a=a-0.000005;
        k = k +r;
        l = l  + r;
        m = m + r;
@@ -43,8 +44,8 @@ void loop()                       // run over and over again
        Serial.print("005 ");          
        sprintf(data,"%03d %03d %03d %03d %03d %03d %03d %03d %03d %03d %03d %03d",a,b,c,d,e,f,g,h,j,k,l,m);
        Serial.println(data);
-       a=a+r;
-       b=b+9;
+       a=-6.92;
+       b=107.61+b+0.9;
        c=(c-r+100)/3;
        d=(d-10+c)/3;
        e=(e-r+15)/3;
@@ -52,6 +53,7 @@ void loop()                       // run over and over again
        g=(g+r+150)/2;
        h=(h+r+300)/2;
        j=(j+r+100)/3;
+       a=a-0.000005;
        k = k - r - 4;
        l = l - r - 5;
        m = m - r - 6;
