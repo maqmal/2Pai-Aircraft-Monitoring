@@ -20,9 +20,9 @@ function getLocation() {
 }
 
 function showPosition(position) {
-  // -6.921507 107.617751  
-  var latt = (position.coords.latitude);
-  var long = (position.coords.longitude);
+  // position.coords.latitude position.coords.longitude
+  var latt =-6.921507;
+  var long =107.617751;
   console.log('Your latitude is :' + latt + ' and longitude is ' + long);
   findWeatherDetails();
 

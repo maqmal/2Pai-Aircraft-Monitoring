@@ -43,8 +43,9 @@ io.on('connection',(socket)=>{
     clientCount++;
     console.log('New client connected '+clientCount);
     parser.on('data',(data)=>{
-        let hasilParsing = parsingRawData(data," ");
+        let hasilParsing = parsingRawData(data);
         socket.emit('socketData',{dataHasil : hasilParsing});
+        socket.emit('dataCoordinate', {dataHasil : hasilParsing});
         console.log(data);
     });
 })
