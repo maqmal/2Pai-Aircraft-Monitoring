@@ -18,69 +18,128 @@ var param = {
 
 function RealTimeData() {
     const socket = io.connect();
-
     socket.on('socketData', (data) => {
         console.log(data);
-
-        document.getElementById("DataRecive").innerHTML = data.dataHasil;
-        succeed.innerHTML = "Data Parsing Succeed!";
-
+        succeed.innerHTML = "Serial port connected at : "+data.dataPort;
         param.setTemp(data.dataHasil[4]);
         param.setHumid(data.dataHasil[3]);
         gaugeTemp.value = data.dataHasil[4];
         gaugeHumid.value = data.dataHasil[3];
+        $("#suhu").html(parseInt(data.dataHasil[4]));
+        $("#humid").html(parseInt(data.dataHasil[3]));
     });
+    succeed.innerHTML = "Serial port not found!";
 }
 
 var gaugeTemp = new LinearGauge({
     renderTo: 'gauge-temp',
-    colorNumbers: 'red',
-    width: 100,
-    height: 300,
+    width: 400,
+    height: 150,
     units: "°C",
-    minValue: 0,
-    maxValue: 220,
+    title: "Temperature",
+    minValue: -50,
+    maxValue: 50,
     majorTicks: [
-        "0",
-        "20",
-        "40",
-        "60",
-        "80",
-        "100",
-        "120",
-        "140",
-        "160",
-        "180",
-        "200",
-        "220"
+        -50,
+        -40,
+        -30,
+        -20,
+        -10,
+        0,
+        10,
+        20,
+        30,
+        40,
+        50
     ],
-    minorTicks: 2,
+    minorTicks: 5,
     strokeTicks: true,
-    highlights: [{
-        "from": 100,
-        "to": 220,
-        "color": "rgba(200, 50, 50, .75)"
-    }],
-    colorPlate: "#fff",
+    ticksWidth: 15,
+    ticksWidthMinor: 7.5,
+    highlights: [
+        {
+            "from": -50,
+            "to": 0,
+            "color": "rgba(0,0, 255, .3)"
+        },
+        {
+            "from": 0,
+            "to": 50,
+            "color": "rgba(255, 0, 0, .3)"
+        }
+    ],
+    colorMajorTicks: "#ffe66a",
+    colorMinorTicks: "#ffe66a",
+    colorTitle: "#eee",
+    colorUnits: "#ccc",
+    colorNumbers: "#eee",
+    colorPlate: "#15151e",
+    colorPlateEnd: "#327ac0",
     borderShadowWidth: 0,
     borders: false,
+    borderRadius: 10,
     needleType: "arrow",
-    needleWidth: 2,
+    needleWidth: 3,
     animationDuration: 1500,
     animationRule: "linear",
-    tickSide: "left",
-    numberSide: "left",
-    needleSide: "left",
-    barStrokeWidth: 7,
+    colorNeedle: "#222",
+    colorNeedleEnd: "",
+    colorBarProgress: "#327ac0",
+    colorBar: "#f5f5f5",
+    barStroke: 0,
+    barWidth: 8,
     barBeginCircle: false
 }).draw();
 
 var gaugeHumid = new RadialGauge({
     renderTo: 'gauge-humid',
-    colorNumbers: 'blue',
+    colorNumbers: 'red',
     width: 200,
     height: 300,
-    units: "Humidity"
+    units: "Humidity",
+    colorPlate: "#15151e",
+    colorUnits: "#eee",
+    colorBorderOuter: "#333",
+    colorBorderOuterEnd: "#111",
+    colorBorderMiddle: "#222",
+    colorBorderMiddleEnd: "#111",
+    colorBorderInner: "#111",
+    colorBorderInnerEnd: "#333",
+    colorTitle: "#eee",
+    colorUnits: "#ccc",
+    colorNumbers: "#eee",
+    minValue: -50,
+    maxValue: 50,
+    majorTicks: [
+        -50,
+        -40,
+        -30,
+        -20,
+        -10,
+        0,
+        10,
+        20,
+        30,
+        40,
+        50
+    ],
+    minorTicks: 2,
+    needleType: "arrow",
+    needleWidth: 2,
+    needleCircleSize: 7,
+    strokeTicks: true,
+    highlights: [
+        {
+            "from": -50,
+            "to": 0,
+            "color": "rgba(0,0, 255, .3)"
+        },
+        {
+            "from": 0,
+            "to": 50,
+            "color": "rgba(255, 0, 0, .3)"
+        }
+    ],
 }).draw();
 
 $(function () {
@@ -281,7 +340,9 @@ $(function () {
             trackBackgroundColor: '#404043',
             trackBorderColor: '#404043'
         },
-
+        global: {
+            useUTC: false
+        },
         // special colors for some of the
         legendBackgroundColor: 'rgba(0, 0, 0, 0.5)',
         background2: '#505053',
@@ -290,7 +351,6 @@ $(function () {
         contrastTextColor: '#F0F0F3',
         maskColor: 'rgba(255,255,255,0.3)'
     };
-
     // Apply the theme
     Highcharts.setOptions(Highcharts.theme);
 
@@ -302,7 +362,7 @@ $(function () {
                 load: function () {
 
                     var series = this.series[0],
-                        shift = series.data.length > 25;
+                        shift = series.data.length > 10;
                     setInterval(function () {
                         var x = (new Date()).getTime(), // current time
                             y = param.getTemp();
@@ -312,7 +372,7 @@ $(function () {
             }
         },
         title: {
-            text: ''
+            text: '<p class="display-3" style="letter-spacing: 3px; font-size:16px;">Temperature</p>'
         },
         xAxis: {
             type: 'datetime',
@@ -330,23 +390,38 @@ $(function () {
             }
         },
         tooltip: {
-            valueSuffix: '°'
+            valueSuffix: '°',
+            headerFormat: '<b>{series.name}</b><br/>',
+            pointFormat: '{point.x: %H:%M:%S}<br>{point.y}'
         },
         plotOptions: {
-            spline: {
-                lineWidth: 4,
-                states: {
-                    hover: {
-                        lineWidth: 5
-                    }
+            area: {
+                fillColor: {
+                    linearGradient: {
+                        x1: 0,
+                        y1: 0,
+                        x2: 0,
+                        y2: 1
+                    },
+                    stops: [
+                        [0, Highcharts.getOptions().colors[0]],
+                        [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                    ]
                 },
                 marker: {
-                    enabled: false
-                }
-
+                    radius: 2
+                },
+                lineWidth: 1,
+                states: {
+                    hover: {
+                        lineWidth: 1
+                    }
+                },
+                threshold: null
             }
         },
         series: [{
+            type: 'area',
             name: 'Temperature',
             data: (function () {
                 var data = [],
@@ -357,7 +432,6 @@ $(function () {
                     data.push({
                         x: time + i * 1000,
                         y: param.getTemp(),
-                        y2: param.getHumid(),
                     });
                 }
                 return data;
@@ -373,7 +447,7 @@ $(function () {
                 load: function () {
 
                     var series = this.series[0],
-                        shift = series.data.length > 25;
+                        shift = series.data.length > 10;
                     setInterval(function () {
                         var x = (new Date()).getTime(), // current time
                             y = param.getHumid();
@@ -383,7 +457,7 @@ $(function () {
             }
         },
         title: {
-            text: ''
+            text: '<p class="display-3" style="letter-spacing: 3px; font-size:16px;">Humidity</p>'
         },
         xAxis: {
             type: 'datetime',
@@ -396,25 +470,39 @@ $(function () {
             maxPadding: 0.2,
             crosshair: true,
             title: {
-                text: 'Humidity',
+                text: 'RH',
                 margin: 5
             }
         },
         tooltip: {
-            valueSuffix: '%'
+            valueSuffix: '%',
+            headerFormat: '<b>{series.name}</b><br/>',
+            pointFormat: '{point.x: %H:%M:%S}<br>{point.y}'
         },
         plotOptions: {
-            spline: {
-                lineWidth: 4,
-                states: {
-                    hover: {
-                        lineWidth: 5
-                    }
+            area: {
+                fillColor: {
+                    linearGradient: {
+                        x1: 0,
+                        y1: 0,
+                        x2: 0,
+                        y2: 1
+                    },
+                    stops: [
+                        [0, Highcharts.getOptions().colors[0]],
+                        [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                    ]
                 },
                 marker: {
-                    enabled: false
-                }
-
+                    radius: 2
+                },
+                lineWidth: 1,
+                states: {
+                    hover: {
+                        lineWidth: 1
+                    }
+                },
+                threshold: null
             }
         },
         series: [{

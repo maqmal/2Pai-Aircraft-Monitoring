@@ -9,7 +9,7 @@ let desc = document.getElementById("desc-div");
 
 var x = document.getElementById("cuaca");
 
-setTimeout(navigator.geolocation.getCurrentPosition(showPosition), 5000);
+navigator.geolocation.getCurrentPosition(showPosition);
 
 function getLocation() {
   if (navigator.geolocation) {
@@ -20,7 +20,7 @@ function getLocation() {
 }
 
 function showPosition(position) {
-  // position.coords.latitude position.coords.longitude
+  // (position.coords.latitude) (position.coords.longitude) -6.921507 107.617751
   var latt =-6.921507;
   var long =107.617751;
   console.log('Your latitude is :' + latt + ' and longitude is ' + long);
@@ -74,7 +74,7 @@ function showPosition(position) {
       }
     }
     var compas = degToCard(jsonObject.wind.deg);
-    x.innerHTML = "Wind : " + jsonObject.wind.speed + " m/s" + " - " + compas + " " + jsonObject.wind.deg + "°" +
+    x.innerHTML = "Wind : " + jsonObject.wind.speed + " m/s" + " - " + compas + " " + parseInt(jsonObject.wind.deg) + "°" +
       "<br>" + "Cloudiness : " + jsonObject.clouds.all + "%";
     console.log('Weather description : ' + jsonObject.weather[0].main + "-" + jsonObject.weather[0].description);
     console.log("Wind : " + jsonObject.wind.speed + " m/s" + " - " + compas + " " + jsonObject.wind.deg + "°" + "Cloudiness : " + jsonObject.clouds.all + "%");
