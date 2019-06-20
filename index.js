@@ -47,6 +47,7 @@ io.on('connection',(socket)=>{
         let parsePort = portNumber;
         socket.emit('socketData',{dataHasil : hasilParsing, dataPort : parsePort});
         socket.emit('dataCoordinate', {dataHasil : hasilParsing});
+        socket.emit('data3d', {dataHasil : hasilParsing});
         console.log(data);
     });
 })

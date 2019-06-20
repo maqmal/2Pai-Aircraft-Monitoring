@@ -1,7 +1,14 @@
 let succeed = document.getElementById("success");
+var suhu;
 var param = {
     humidity: 0,
     temperature: 0,
+    acc_x: 0,
+    acc_y: 0,
+    acc_z: 0,
+    gyro_x: 0,
+    gyro_y: 0,
+    gyro_z: 0,
     setHumid: function (data) {
         this.humidity = parseFloat(data);
     },
@@ -13,6 +20,44 @@ var param = {
     },
     getTemp: function () {
         return this.temperature;
+    },
+
+    setAcc_X: function (data) {
+        this.acc_x = parseFloat(data);
+    },
+    setAcc_Y: function (data) {
+        this.acc_y = parseFloat(data);
+    },
+    setAcc_Z: function (data) {
+        this.acc_z = parseFloat(data);
+    },
+    getAcc_X: function () {
+        return this.acc_x;
+    },
+    getAcc_Y: function () {
+        return this.acc_y;
+    },
+    getAcc_Z: function () {
+        return this.acc_z;
+    },
+
+    setGyro_X: function (data) {
+        this.gyro_x = parseFloat(data);
+    },
+    setGyro_Y: function (data) {
+        this.gyro_y = parseFloat(data);
+    },
+    setGyro_Z: function (data) {
+        this.gyro_z = parseFloat(data);
+    },
+    getGyro_X: function () {
+        return this.gyro_x;
+    },
+    getGyro_Y: function () {
+        return this.gyro_y;
+    },
+    getGyro_Z: function () {
+        return this.gyro_z;
     }
 }
 
@@ -20,13 +65,21 @@ function RealTimeData() {
     const socket = io.connect();
     socket.on('socketData', (data) => {
         console.log(data);
-        succeed.innerHTML = "Serial port connected at : "+data.dataPort;
-        param.setTemp(data.dataHasil[4]);
+        succeed.innerHTML = "Serial port connected at : " + data.dataPort;
         param.setHumid(data.dataHasil[3]);
+        param.setTemp(data.dataHasil[4]);
+
+        param.setAcc_X(data.dataHasil[5]);
+        param.setAcc_Y(data.dataHasil[6]);
+        param.setAcc_Z(data.dataHasil[7]);
+
+        param.setGyro_X(data.dataHasil[8]);
+        param.setGyro_Y(data.dataHasil[9]);
+        param.setGyro_Z(data.dataHasil[10])
+
         gaugeTemp.value = data.dataHasil[4];
         gaugeHumid.value = data.dataHasil[3];
-        $("#suhu").html(parseInt(data.dataHasil[4]));
-        $("#humid").html(parseInt(data.dataHasil[3]));
+        suhu = data.dataHasil[4]
     });
     succeed.innerHTML = "Serial port not found!";
 }
@@ -56,8 +109,7 @@ var gaugeTemp = new LinearGauge({
     strokeTicks: true,
     ticksWidth: 15,
     ticksWidthMinor: 7.5,
-    highlights: [
-        {
+    highlights: [{
             "from": -50,
             "to": 0,
             "color": "rgba(0,0, 255, .3)"
@@ -128,8 +180,7 @@ var gaugeHumid = new RadialGauge({
     needleWidth: 2,
     needleCircleSize: 7,
     strokeTicks: true,
-    highlights: [
-        {
+    highlights: [{
             "from": -50,
             "to": 0,
             "color": "rgba(0,0, 255, .3)"
@@ -143,7 +194,7 @@ var gaugeHumid = new RadialGauge({
 }).draw();
 
 $(function () {
-    Highcharts.createElement('link',null, null, document.getElementsByTagName('head')[0]);
+    Highcharts.createElement('link', null, null, document.getElementsByTagName('head')[0]);
 
     Highcharts.theme = {
         colors: ['#2b908f', '#90ee7e', '#f45b5b', '#7798BF', '#aaeeee', '#ff0066',
@@ -357,7 +408,6 @@ $(function () {
     chartTemp = new Highcharts.Chart({
         chart: {
             renderTo: 'chartTemp',
-            defaultSeriesType: 'spline',
             events: {
                 load: function () {
 
@@ -373,6 +423,9 @@ $(function () {
         },
         title: {
             text: '<p class="display-3" style="letter-spacing: 3px; font-size:16px;">Temperature</p>'
+        },
+        subtitle: {
+            text: suhu
         },
         xAxis: {
             type: 'datetime',
@@ -442,7 +495,7 @@ $(function () {
     chartHumid = new Highcharts.Chart({
         chart: {
             renderTo: 'chartHumid',
-            defaultSeriesType: 'spline',
+            type: 'area',
             events: {
                 load: function () {
 
@@ -454,7 +507,7 @@ $(function () {
                         series.addPoint([x, y], true, shift);
                     }, 1000);
                 }
-            }
+            },
         },
         title: {
             text: '<p class="display-3" style="letter-spacing: 3px; font-size:16px;">Humidity</p>'
@@ -489,8 +542,8 @@ $(function () {
                         y2: 1
                     },
                     stops: [
-                        [0, Highcharts.getOptions().colors[0]],
-                        [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                        [0, Highcharts.getOptions().colors[1]],
+                        [1, Highcharts.Color(Highcharts.getOptions().colors[1]).setOpacity(0).get('rgba')]
                     ]
                 },
                 marker: {
@@ -507,7 +560,7 @@ $(function () {
         },
         series: [{
             name: 'Humidity',
-            color: '#CDDC39',
+            color: Highcharts.getOptions().colors[1],
             data: (function () {
                 var data = [],
                     time = (new Date()).getTime(),
@@ -517,6 +570,488 @@ $(function () {
                     data.push({
                         x: time + i * 1000,
                         y: param.getHumid()
+                    });
+                }
+                return data;
+            }())
+        }]
+    });
+
+    chartAcc_X = new Highcharts.Chart({
+        chart: {
+            renderTo: 'chartAcc_X',
+            defaultSeriesType: 'spline',
+            events: {
+                load: function () {
+
+                    var series = this.series[0],
+                        shift = series.data.length > 5;
+                    setInterval(function () {
+                        var x = (new Date()).getTime(), // current time
+                            y = param.getAcc_X();
+                        series.addPoint([x, y], true, shift);
+                    }, 1000);
+
+
+                }
+            }
+        },
+        title: {
+            text: '<p class="display-3" style="letter-spacing: 3px; font-size:16px;">Accelerometer X axis</p>'
+        },
+        xAxis: {
+            type: 'datetime',
+            tickPixelInterval: 150,
+            crosshair: true,
+            maxZoom: 20 * 1000
+        },
+        yAxis: {
+            minPadding: 0.2,
+            maxPadding: 0.2,
+            crosshair: true,
+            title: {
+                text: 'm/s²',
+                margin: 5
+            }
+        },
+        tooltip: {
+            valueSuffix: 'm/s²',
+            headerFormat: '<b>{series.name}</b><br/>',
+            pointFormat: '{point.x: %H:%M:%S}<br>{point.y}'
+	    },
+	   plotOptions: {
+            spline: {
+                lineWidth: 4,
+                states: {
+                    hover: {
+                        lineWidth: 5
+                    }
+                },
+                marker: {
+                    enabled: true
+                },
+                lineWidth: 1,
+                states: {
+                    hover: {
+                        lineWidth: 1
+                    }
+                },
+                threshold: null
+            }
+        },
+        series: [{
+            name: 'Accelerometer X axis',
+            data: (function () {
+                var data = [],
+                    time = (new Date()).getTime(),
+                    i;
+
+                for (i = -19; i <= 0; i += 1) {
+                    data.push({
+                        x: time + i * 1000,
+                        y: param.getAcc_X()
+                    });
+                }
+                return data;
+            }())
+        }]
+    });
+
+    chartAcc_Y = new Highcharts.Chart({
+        chart: {
+            renderTo: 'chartAcc_Y',
+            defaultSeriesType: 'spline',
+            events: {
+                load: function () {
+
+                    var series = this.series[0],
+                        shift = series.data.length > 5;
+                    setInterval(function () {
+                        var x = (new Date()).getTime(), // current time
+                            y = param.getAcc_Y();
+                        series.addPoint([x, y], true, shift);
+                    }, 1000);
+
+
+                }
+            }
+        },
+        title: {
+            text: '<p class="display-3" style="letter-spacing: 3px; font-size:16px;">Accelerometer Y axis</p>'
+        },
+        xAxis: {
+            type: 'datetime',
+            tickPixelInterval: 150,
+            crosshair: true,
+            maxZoom: 20 * 1000
+        },
+        yAxis: {
+            minPadding: 0.2,
+            maxPadding: 0.2,
+            crosshair: true,
+            title: {
+                text: 'm/s²',
+                margin: 5
+            }
+        },
+        tooltip: {
+            valueSuffix: 'm/s²',
+            headerFormat: '<b>{series.name}</b><br/>',
+            pointFormat: '{point.x: %H:%M:%S}<br>{point.y}'
+	    },
+	   plotOptions: {
+            spline: {
+                lineWidth: 4,
+                states: {
+                    hover: {
+                        lineWidth: 5
+                    }
+                },
+                marker: {
+                    enabled: true
+                },
+                lineWidth: 1,
+                states: {
+                    hover: {
+                        lineWidth: 1
+                    }
+                },
+                threshold: null
+            }
+        },
+        series: [{
+            color: Highcharts.getOptions().colors[2],
+            name: 'Accelerometer Y axis',
+            data: (function () {
+                var data = [],
+                    time = (new Date()).getTime(),
+                    i;
+
+                for (i = -19; i <= 0; i += 1) {
+                    data.push({
+                        x: time + i * 1000,
+                        y: param.getAcc_Y()
+                    });
+                }
+                return data;
+            }())
+        }]
+    });
+
+    chartAcc_Z = new Highcharts.Chart({
+        chart: {
+            renderTo: 'chartAcc_Z',
+            defaultSeriesType: 'spline',
+            events: {
+                load: function () {
+
+                    var series = this.series[0],
+                        shift = series.data.length > 5;
+                    setInterval(function () {
+                        var x = (new Date()).getTime(), // current time
+                            y = param.getAcc_Z();
+                        series.addPoint([x, y], true, shift);
+                    }, 1000);
+
+
+                }
+            }
+        },
+        title: {
+            text: '<p class="display-3" style="letter-spacing: 3px; font-size:16px;">Accelerometer Z axis</p>'
+        },
+        xAxis: {
+            type: 'datetime',
+            tickPixelInterval: 150,
+            crosshair: true,
+            maxZoom: 20 * 1000
+        },
+        yAxis: {
+            minPadding: 0.2,
+            maxPadding: 0.2,
+            crosshair: true,
+            title: {
+                text: 'm/s²',
+                margin: 5
+            }
+        },
+        tooltip: {
+            valueSuffix: 'm/s²',
+            headerFormat: '<b>{series.name}</b><br/>',
+            pointFormat: '{point.x: %H:%M:%S}<br>{point.y}'
+	    },
+	   plotOptions: {
+            spline: {
+                lineWidth: 4,
+                states: {
+                    hover: {
+                        lineWidth: 5
+                    }
+                },
+                marker: {
+                    enabled: true
+                },
+                lineWidth: 1,
+                states: {
+                    hover: {
+                        lineWidth: 1
+                    }
+                },
+                threshold: null
+            }
+        },
+        series: [{
+            color: Highcharts.getOptions().colors[3],
+            name: 'Accelerometer Z axis',
+            data: (function () {
+                var data = [],
+                    time = (new Date()).getTime(),
+                    i;
+
+                for (i = -19; i <= 0; i += 1) {
+                    data.push({
+                        x: time + i * 1000,
+                        y: param.getAcc_Z()
+                    });
+                }
+                return data;
+            }())
+        }]
+    });
+
+    chartGyro_X = new Highcharts.Chart({
+        chart: {
+            renderTo: 'chartGyro_X',
+            defaultSeriesType: 'spline',
+            events: {
+                load: function () {
+
+                    var series = this.series[0],
+                        shift = series.data.length > 5;
+                    setInterval(function () {
+                        var x = (new Date()).getTime(), // current time
+                            y = param.getGyro_X();
+                        series.addPoint([x, y], true, shift);
+                    }, 1000);
+
+
+                }
+            }
+        },
+        title: {
+            text: '<p class="display-3" style="letter-spacing: 3px; font-size:16px;">Gyroscope X axis</p>'
+        },
+        xAxis: {
+            type: 'datetime',
+            tickPixelInterval: 150,
+            crosshair: true,
+            maxZoom: 20 * 1000
+        },
+        yAxis: {
+            minPadding: 0.2,
+            maxPadding: 0.2,
+            crosshair: true,
+            title: {
+                text: 'deg/s',
+                margin: 5
+            }
+        },
+        tooltip: {
+            valueSuffix: 'deg/s',
+            headerFormat: '<b>{series.name}</b><br/>',
+            pointFormat: '{point.x: %H:%M:%S}<br>{point.y}'
+	    },
+	   plotOptions: {
+            spline: {
+                lineWidth: 4,
+                states: {
+                    hover: {
+                        lineWidth: 5
+                    }
+                },
+                marker: {
+                    enabled: true
+                },
+                lineWidth: 1,
+                states: {
+                    hover: {
+                        lineWidth: 1
+                    }
+                },
+                threshold: null
+            }
+        },
+        series: [{
+            name: 'Gyroscope X axis',
+            data: (function () {
+                var data = [],
+                    time = (new Date()).getTime(),
+                    i;
+
+                for (i = -19; i <= 0; i += 1) {
+                    data.push({
+                        x: time + i * 1000,
+                        y: param.getGyro_X()
+                    });
+                }
+                return data;
+            }())
+        }]
+    });
+
+    chartGyro_Y = new Highcharts.Chart({
+        chart: {
+            renderTo: 'chartGyro_Y',
+            defaultSeriesType: 'spline',
+            events: {
+                load: function () {
+
+                    var series = this.series[0],
+                        shift = series.data.length > 5;
+                    setInterval(function () {
+                        var x = (new Date()).getTime(), // current time
+                            y = param.getGyro_Y();
+                        series.addPoint([x, y], true, shift);
+                    }, 1000);
+
+
+                }
+            }
+        },
+        title: {
+            text: '<p class="display-3" style="letter-spacing: 3px; font-size:16px;">Gyroscope Y axis</p>'
+        },
+        xAxis: {
+            type: 'datetime',
+            tickPixelInterval: 150,
+            crosshair: true,
+            maxZoom: 20 * 1000
+        },
+        yAxis: {
+            minPadding: 0.2,
+            maxPadding: 0.2,
+            crosshair: true,
+            title: {
+                text: 'deg/s',
+                margin: 5
+            }
+        },
+        tooltip: {
+            valueSuffix: 'deg/s',
+            headerFormat: '<b>{series.name}</b><br/>',
+            pointFormat: '{point.x: %H:%M:%S}<br>{point.y}'
+	    },
+	   plotOptions: {
+            spline: {
+                lineWidth: 4,
+                states: {
+                    hover: {
+                        lineWidth: 5
+                    }
+                },
+                marker: {
+                    enabled: true
+                },
+                lineWidth: 1,
+                states: {
+                    hover: {
+                        lineWidth: 1
+                    }
+                },
+                threshold: null
+            }
+        },
+        series: [{
+            name: 'Gyroscope Y axis',
+            data: (function () {
+                var data = [],
+                    time = (new Date()).getTime(),
+                    i;
+
+                for (i = -19; i <= 0; i += 1) {
+                    data.push({
+                        x: time + i * 1000,
+                        y: param.getGyro_Y()
+                    });
+                }
+                return data;
+            }())
+        }]
+    });
+
+    chartGyro_Z = new Highcharts.Chart({
+        chart: {
+            renderTo: 'chartGyro_Z',
+            defaultSeriesType: 'spline',
+            events: {
+                load: function () {
+
+                    var series = this.series[0],
+                        shift = series.data.length > 5;
+                    setInterval(function () {
+                        var x = (new Date()).getTime(), // current time
+                            y = param.getGyro_Z();
+                        series.addPoint([x, y], true, shift);
+                    }, 1000);
+
+
+                }
+            }
+        },
+        title: {
+            text: '<p class="display-3" style="letter-spacing: 3px; font-size:16px;">Gyroscope Z axis</p>'
+        },
+        xAxis: {
+            type: 'datetime',
+            tickPixelInterval: 150,
+            crosshair: true,
+            maxZoom: 20 * 1000
+        },
+        yAxis: {
+            minPadding: 0.2,
+            maxPadding: 0.2,
+            crosshair: true,
+            title: {
+                text: 'deg/s',
+                margin: 5
+            }
+        },
+        tooltip: {
+            valueSuffix: 'deg/s',
+            headerFormat: '<b>{series.name}</b><br/>',
+            pointFormat: '{point.x: %H:%M:%S}<br>{point.y}'
+	    },
+	   plotOptions: {
+            spline: {
+                lineWidth: 4,
+                states: {
+                    hover: {
+                        lineWidth: 5
+                    }
+                },
+                marker: {
+                    enabled: true
+                },
+                lineWidth: 1,
+                states: {
+                    hover: {
+                        lineWidth: 1
+                    }
+                },
+                threshold: null
+            }
+        },
+        series: [{
+            name: 'Gyroscope Z axis',
+            data: (function () {
+                var data = [],
+                    time = (new Date()).getTime(),
+                    i;
+
+                for (i = -19; i <= 0; i += 1) {
+                    data.push({
+                        x: time + i * 1000,
+                        y: param.getGyro_Z()
                     });
                 }
                 return data;

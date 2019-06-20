@@ -21,8 +21,8 @@ function getLocation() {
 
 function showPosition(position) {
   // (position.coords.latitude) (position.coords.longitude) -6.921507 107.617751
-  var latt =-6.921507;
-  var long =107.617751;
+  var latt =(position.coords.latitude);
+  var long =(position.coords.longitude);
   console.log('Your latitude is :' + latt + ' and longitude is ' + long);
   findWeatherDetails();
 
@@ -33,7 +33,7 @@ function showPosition(position) {
 
   function theResponse(response) {
     let jsonObject = JSON.parse(response);
-    cityName.innerHTML = jsonObject.name;
+    cityName.innerHTML = "<i class='fas fa-map-marker-alt' style='color:white;font-size: 15px'></i> "+jsonObject.name;
     icon.src = "http://openweathermap.org/img/w/" + jsonObject.weather[0].icon + ".png";
     temperature.innerHTML = "Feels like " + parseInt(jsonObject.main.temp - 273) + "°";
     desc.innerHTML = jsonObject.weather[0].main + "-" + jsonObject.weather[0].description;

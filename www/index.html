@@ -5,13 +5,20 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>2Pai Aircraft Monitoring System</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
-    <link rel="stylesheet" href="weather/css/main.css">
+    <!-- Scrollbar -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simplebar@latest/dist/simplebar.css">
+    <script src="https://cdn.jsdelivr.net/npm/simplebar@latest/dist/simplebar.min.js"></script>
+    <!-- 3D model -->
+    <script src="app/three.js"></script>
+    <script src="app/3dmodel.js"></script>
     <!-- Highchart -->
     <script src="https://code.highcharts.com/highcharts.js"></script>
-
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
     <script src="//cdn.rawgit.com/Mikhus/canvas-gauges/gh-pages/download/2.1.5/all/gauge.min.js"></script>
     <style>
         body {
@@ -19,56 +26,69 @@
         }
 
         #map {
-            height: 70%;
-            width: 120%;
+            width: 70%;
         }
+        canvas { width: 100%; height: 100% }
     </style>
 </head>
 
-<body onload="RealTimeData();startTime();mapUpdate();">
+<body onload="RealTimeData();startTime();mapUpdate();TdModel();" data-simplebar>
     <nav class="navbar navbar-light bg-dark">
         <span class="navbar-brand mb-0 h1 display-3" style="color:white; letter-spacing: 3px;">2PaiAirlines
             <div id="success" style="color:white;font-size: 11px;"></div>
         </span>
-        <span class="display-3" id="date" style="color:white; font-size: 21px;letter-spacing: 1px;"></span>
-        <p id="cuaca" class="display-3" style="color:white; font-size: 16px;"></p>
+        <span class="display-3" id="date" style="color:white; font-size: 21px;letter-spacing: 1px; margin-left:-100px;"></span>
+        <div>
+            <div id="temp" style="color:white;font-size: 16px; margin-top: 14px;letter-spacing: 1px;"  class="display-3"></div>
+            <p id="cuaca" class="display-3" style="color:white; font-size: 16px;letter-spacing: 1px;"></p>
+        </div>
         <div class="city-icon" style="color:white">
-            <div class="city-icon-holder" style="color:white; padding-top: -12px;">
-                <div id="city-name" class="display-3" style="color:white; font-size: 17px;"></div>
+            <div class="city-icon-holder" style="color:white; padding-top: -12px; text-align: center">
+                <div id="city-name" class="display-3" style="color:white; font-size: 18px;text-align: center"></div>
                 <img src="" alt="" id="icon" style="color:white">
-                <div id="desc-div" style="color:white;"></div>
+                <div id="desc-div" class="display-3" style="color:white;font-size: 17px;text-align: center"></div>
             </div>
         </div>
-        <div class="temperature" style="color:white;">
-            <h3 class="display-3" style="color:white; font-size: 16px;"></h3>
-            <div id="temp" style="color:white;"></div>
-        </div>
-
         <button onclick="getLocation()" type="button" class="btn btn-secondary">Refresh Cuaca</button>
     </nav>
-    <br>
-
-    <div class="container align-items-center">
+    <br> 
+    <div class="container-fluid align-items-center">
         <table class="table table-dark table-borderless">
             <tr>
                 <th id="map" scope="col"></th>
                 <th scope="col">
                     <canvas id="gauge-humid" style="margin-left:100px;"></canvas>
-                    <canvas id="gauge-temp" ></canvas>
+                    <br><br><br>
+                    <canvas id="gauge-temp" style="margin-bottom:75px; margin-left:10px;"></canvas>
                 </th>
             </tr>
         </table>
     </div>
     <div class="container-fluid" style="text-align:center;">
-        <div style="text-align:center;">
-            <div id="suhu" style="color:white;"></div>
-            <div id="humid" style="color:white;"></div>
+        <div class="row">
+            <br>
+            <div id="chartHumid" class="col h-100"></div>
+            <br>
+            <div id="chartTemp" class="col h-100"></div>
         </div>
         <br>
-        <div id="chartHumid"></div>
+        <div class="row">
+            <div id="chartAcc_X" class="col h-100"></div>
+            <br>
+            <div id="chartAcc_Y" class="col h-100"></div>
+            <br>
+            <div id="chartAcc_Z" class="col h-100"></div>
+        </div>
         <br>
-        <div id="chartTemp"></div>
+        <div class="row">
+            <div id="chartGyro_X" class="col h-100"></div>
+            <br>
+            <div id="chartGyro_Y" class="col h-100"></div>
+            <br>
+            <div id="chartGyro_Z" class="col h-100"></div>
+        </div>
     </div>
+
 
     <script>
         function startTime() {
@@ -82,7 +102,7 @@
             weekday[5] = "Fri";
             weekday[6] = "Sat";
             var hari = weekday[today.getDay()];
-            var m = today.getMonth() + 1;
+            var m = today.getMonth();
             var jam = today.getHours();
             var menit = today.getMinutes();
             menit = checkTime(menit);
@@ -91,7 +111,7 @@
             ];
             var m = monthArr[m];
             var d = today.getDate();
-            document.getElementById("date").innerHTML = jam + ":" + menit + "<br>" + hari + ", " + m + " " + +d +
+            document.getElementById("date").innerHTML = jam + ":" + menit + " " + hari + ", " + m + " " + +d +
                 " ";
             var t = setTimeout(startTime, 500);
         }
