@@ -12,9 +12,6 @@
     <!-- Scrollbar -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simplebar@latest/dist/simplebar.css">
     <script src="https://cdn.jsdelivr.net/npm/simplebar@latest/dist/simplebar.min.js"></script>
-    <!-- 3D model -->
-    <script src="app/three.js"></script>
-    <script src="app/3dmodel.js"></script>
     <!-- Highchart -->
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
@@ -24,18 +21,17 @@
         body {
             background-color: #15151e;
         }
-
         #map {
             width: 70%;
         }
-        canvas { width: 100%; height: 100% }
     </style>
 </head>
 
-<body onload="RealTimeData();startTime();mapUpdate();TdModel();" data-simplebar>
+<body onload="RealTimeData();startTime();mapUpdate();TdModel();">
+<div data-simplebar>
     <nav class="navbar navbar-light bg-dark">
-        <span class="navbar-brand mb-0 h1 display-3" style="color:white; letter-spacing: 3px;">2PaiAirlines
-            <div id="success" style="color:white;font-size: 11px;"></div>
+        <span class="navbar-brand mb-0 h1 display-3" style="color:rgb(255, 199, 96); letter-spacing: 3px;">2PaiAirlines
+            <div id="success" style="color:rgb(255, 199, 96);font-size: 11px;"></div>
         </span>
         <span class="display-3" id="date" style="color:white; font-size: 21px;letter-spacing: 1px; margin-left:-100px;"></span>
         <div>
@@ -55,6 +51,7 @@
     <div class="container-fluid align-items-center">
         <table class="table table-dark table-borderless">
             <tr>
+                
                 <th id="map" scope="col"></th>
                 <th scope="col">
                     <canvas id="gauge-humid" style="margin-left:100px;"></canvas>
@@ -89,7 +86,7 @@
         </div>
     </div>
 
-
+</div>
     <script>
         function startTime() {
             var today = new Date();
@@ -136,6 +133,8 @@
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
     </script>
 
+    <!-- 3D model -->
+    <script src="app/3dmodel.js"></script>
     <!--Data js-->
     <script src="/index.js"></script>
     <script src="app/map.js"></script>

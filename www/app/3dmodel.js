@@ -45,9 +45,9 @@ var param = {
     }
 }
 
-function TdModel(){
+function TdModel() {
     const socket = io.connect();
-    socket.on('data3d' ,(data)=> {
+    socket.on('data3d', (data) => {
         param.setAcc_X(data.dataHasil[5]);
         param.setAcc_Y(data.dataHasil[6]);
         param.setAcc_Z(data.dataHasil[7]);
@@ -55,5 +55,6 @@ function TdModel(){
         param.setGyro_X(data.dataHasil[8]);
         param.setGyro_Y(data.dataHasil[9]);
         param.setGyro_Z(data.dataHasil[10])
-  });
+
+    });
 }

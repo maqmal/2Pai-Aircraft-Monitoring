@@ -1,7 +1,6 @@
 const serialPort = require('serialport');
 const portNumber = "COM10";// situasional, lihat port di device manager
 const baudPort = new serialPort(portNumber ,{baudRate:57600});
-var parseError
 console.log("Port Number : "+portNumber);
 // parser agar tidak buffer
 const parsers = serialPort.parsers;
