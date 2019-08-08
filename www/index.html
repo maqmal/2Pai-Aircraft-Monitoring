@@ -17,13 +17,19 @@
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
     <script src="https://code.highcharts.com/modules/export-data.js"></script>
     <script src="//cdn.rawgit.com/Mikhus/canvas-gauges/gh-pages/download/2.1.5/all/gauge.min.js"></script>
+    <!-- 3D model -->
+    <script src="3d/three.js"></script>
+    <script src="3d/orbitcontrolls.js"></script>
+    <script src="3d/trackballcontrolls.js"></script>
+    <script src="3d/colladaloader.js"></script>
     <style>
         body {
-            background-color: #15151e;
+            background-color: #535353;
         }
         #map {
             width: 70%;
         }
+        canvas { width: 1%; height:1% }
     </style>
 </head>
 
@@ -51,7 +57,6 @@
     <div class="container-fluid align-items-center">
         <table class="table table-dark table-borderless">
             <tr>
-                
                 <th id="map" scope="col"></th>
                 <th scope="col">
                     <canvas id="gauge-humid" style="margin-left:100px;"></canvas>
@@ -59,8 +64,14 @@
                     <canvas id="gauge-temp" style="margin-bottom:75px; margin-left:10px;"></canvas>
                 </th>
             </tr>
+            <tr>
+                <td id="gyroX"></td>
+            </tr>
         </table>
     </div>
+
+    <div id="3D" style="width: 1%"></div>
+
     <div class="container-fluid" style="text-align:center;">
         <div class="row">
             <br>

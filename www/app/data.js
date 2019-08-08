@@ -1,4 +1,5 @@
 let succeed = document.getElementById("success");
+let gyroX = document.getElementById("gyroX")
 var suhu;
 var param = {
     humidity: 0,
@@ -66,6 +67,9 @@ function RealTimeData() {
     socket.on('socketData', (data) => {
         console.log(data);
         succeed.innerHTML = "Serial port connected at : " + data.dataPort;
+
+        gyroX.innerHTML = "Gyroscope X : "+data.dataHasil[8]+"rad/s";
+
         param.setHumid(data.dataHasil[3]);
         param.setTemp(data.dataHasil[4]);
 
@@ -594,7 +598,7 @@ $(function () {
 
 
                 }
-            }
+            },
         },
         title: {
             text: '<p class="display-3" style="letter-spacing: 3px; font-size:16px;">Accelerometer X axis</p>'
@@ -610,12 +614,12 @@ $(function () {
             maxPadding: 0.2,
             crosshair: true,
             title: {
-                text: 'm/s²',
+                text: ' m/s²',
                 margin: 5
             }
         },
         tooltip: {
-            valueSuffix: 'm/s²',
+            valueSuffix: ' m/s²',
             headerFormat: '<b>{series.name}</b><br/>',
             pointFormat: '{point.x: %H:%M:%S}<br>{point.y}'
 	    },
@@ -654,6 +658,7 @@ $(function () {
                 }
                 return data;
             }())
+
         }]
     });
 
@@ -690,12 +695,12 @@ $(function () {
             maxPadding: 0.2,
             crosshair: true,
             title: {
-                text: 'm/s²',
+                text: ' m/s²',
                 margin: 5
             }
         },
         tooltip: {
-            valueSuffix: 'm/s²',
+            valueSuffix: ' m/s²',
             headerFormat: '<b>{series.name}</b><br/>',
             pointFormat: '{point.x: %H:%M:%S}<br>{point.y}'
 	    },
@@ -771,12 +776,12 @@ $(function () {
             maxPadding: 0.2,
             crosshair: true,
             title: {
-                text: 'm/s²',
+                text: ' m/s²',
                 margin: 5
             }
         },
         tooltip: {
-            valueSuffix: 'm/s²',
+            valueSuffix: ' m/s²',
             headerFormat: '<b>{series.name}</b><br/>',
             pointFormat: '{point.x: %H:%M:%S}<br>{point.y}'
 	    },
@@ -852,12 +857,12 @@ $(function () {
             maxPadding: 0.2,
             crosshair: true,
             title: {
-                text: 'deg/s',
+                text: 'rad/s',
                 margin: 5
             }
         },
         tooltip: {
-            valueSuffix: 'deg/s',
+            valueSuffix: ' rad/s',
             headerFormat: '<b>{series.name}</b><br/>',
             pointFormat: '{point.x: %H:%M:%S}<br>{point.y}'
 	    },
@@ -932,12 +937,12 @@ $(function () {
             maxPadding: 0.2,
             crosshair: true,
             title: {
-                text: 'deg/s',
+                text: ' rad/s',
                 margin: 5
             }
         },
         tooltip: {
-            valueSuffix: 'deg/s',
+            valueSuffix: ' rad/s',
             headerFormat: '<b>{series.name}</b><br/>',
             pointFormat: '{point.x: %H:%M:%S}<br>{point.y}'
 	    },
@@ -1012,12 +1017,12 @@ $(function () {
             maxPadding: 0.2,
             crosshair: true,
             title: {
-                text: 'deg/s',
+                text: ' rad/s',
                 margin: 5
             }
         },
         tooltip: {
-            valueSuffix: 'deg/s',
+            valueSuffix: ' rad/s',
             headerFormat: '<b>{series.name}</b><br/>',
             pointFormat: '{point.x: %H:%M:%S}<br>{point.y}'
 	    },
