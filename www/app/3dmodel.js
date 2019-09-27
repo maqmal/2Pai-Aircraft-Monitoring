@@ -54,7 +54,7 @@ var scene,
 /////////////////////////////////////////
 scene = new THREE.Scene();
 
-camera = new THREE.PerspectiveCamera( 10, window.innerWidth / window.innerHeight, 1, 1000 );
+camera = new THREE.PerspectiveCamera( 10,  16/9, 1, 50 );
 camera.position.set(5, 4, 5);
 camera.lookAt( scene.position );
 
@@ -63,7 +63,7 @@ renderer = new THREE.WebGLRenderer({
 	antialias: true
 });
 renderer.setPixelRatio( window.devicePixelRatio );
-renderer.setSize( window.innerWidth, window.innerHeight );
+renderer.setSize( 470, 280);
 
 document.getElementById("3D").appendChild( renderer.domElement );
 
@@ -91,10 +91,6 @@ var object_color  = '#FAFAFA',
     ambientLight  = new THREE.AmbientLight( '#EEEEEE' ),
     hemiLight     = new THREE.HemisphereLight( object_color, object_color, 0 ),
     light         = new THREE.PointLight( object_color, 1, 100 );
-
-hemiLight.position.set( 0, 50, 0 );
-light.position.set( 0, 20, 10 );
-
 scene.add( ambientLight );
 scene.add( hemiLight );
 scene.add( light );
