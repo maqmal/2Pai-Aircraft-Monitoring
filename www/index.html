@@ -24,12 +24,11 @@
     <script src="3d/colladaloader.js"></script>
     <style>
         body {
-            background-color: #535353;
+            background-color: #000000;
         }
         #map {
             width: 70%;
         }
-        canvas { width: 1%; height:1% }
     </style>
 </head>
 
@@ -56,12 +55,14 @@
     <br> 
     <div class="container-fluid align-items-center">
         <table class="table table-dark table-borderless">
+            
             <tr>
                 <th id="map" scope="col"></th>
                 <th scope="col">
                     <canvas id="gauge-humid" style="margin-left:100px;"></canvas>
                     <br><br><br>
                     <canvas id="gauge-temp" style="margin-bottom:75px; margin-left:10px;"></canvas>
+                    <div id="3D"></div>
                 </th>
             </tr>
             <tr>
@@ -70,7 +71,7 @@
         </table>
     </div>
 
-    <div id="3D" style="width: 1%"></div>
+    <div id="3D"></div>
 
     <div class="container-fluid" style="text-align:center;">
         <div class="row">

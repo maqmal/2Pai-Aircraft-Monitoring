@@ -33,7 +33,7 @@ const io = require('socket.io').listen(server);
 const path = require('path');
 
 app.use(express.static(path.join(__dirname,'www')));
-const portListen = 8080;
+const portListen = 3123;
 server.listen(portListen);
 
 //buat socket event
