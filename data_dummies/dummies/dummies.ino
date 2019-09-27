@@ -1,3 +1,18 @@
+// #include <WebUSB.h>
+
+
+// WebUSB WebUSBSerial(1 /* https:// */, "webusb.github.io/arduino/demos");
+
+// #define Serial WebUSBSerial
+
+// void setup() {
+//   Serial.begin(9600);
+//   while (!Serial) {
+//     ; // Wait for serial port to connect.
+//   }
+//   Serial.write("WebUSB FTW!");
+//   Serial.flush();
+// }
 
 int a,b,c,d,e,f,g,h,i,j,k,l,m = 0;
 void setup()                    // run once, when the sketch starts

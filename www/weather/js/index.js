@@ -9,7 +9,7 @@ let desc = document.getElementById("desc-div");
 
 var x = document.getElementById("cuaca");
 
-setTimeout(navigator.geolocation.getCurrentPosition(showPosition), 5000);
+navigator.geolocation.getCurrentPosition(showPosition);
 
 function getLocation() {
   if (navigator.geolocation) {
@@ -33,7 +33,7 @@ function showPosition(position) {
 
   function theResponse(response) {
     let jsonObject = JSON.parse(response);
-    cityName.innerHTML = jsonObject.name;
+    cityName.innerHTML = "<i class='fas fa-map-marker-alt' style='color:white;font-size: 15px'></i> "+jsonObject.name;
     icon.src = "http://openweathermap.org/img/w/" + jsonObject.weather[0].icon + ".png";
     temperature.innerHTML = "Feels like " + parseInt(jsonObject.main.temp - 273) + "°";
     desc.innerHTML = jsonObject.weather[0].main + "-" + jsonObject.weather[0].description;
@@ -74,7 +74,7 @@ function showPosition(position) {
       }
     }
     var compas = degToCard(jsonObject.wind.deg);
-    x.innerHTML = "Wind : " + jsonObject.wind.speed + " m/s" + " - " + compas + " " + jsonObject.wind.deg + "°" +
+    x.innerHTML = "Wind : " + jsonObject.wind.speed + " m/s" + " - " + compas + " " + parseInt(jsonObject.wind.deg) + "°" +
       "<br>" + "Cloudiness : " + jsonObject.clouds.all + "%";
     console.log('Weather description : ' + jsonObject.weather[0].main + "-" + jsonObject.weather[0].description);
     console.log("Wind : " + jsonObject.wind.speed + " m/s" + " - " + compas + " " + jsonObject.wind.deg + "°" + "Cloudiness : " + jsonObject.clouds.all + "%");

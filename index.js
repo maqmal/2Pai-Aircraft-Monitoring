@@ -1,7 +1,6 @@
 const serialPort = require('serialport');
 const portNumber = "COM10";// situasional, lihat port di device manager
 const baudPort = new serialPort(portNumber ,{baudRate:57600});
-
 console.log("Port Number : "+portNumber);
 // parser agar tidak buffer
 const parsers = serialPort.parsers;
@@ -34,7 +33,7 @@ const io = require('socket.io').listen(server);
 const path = require('path');
 
 app.use(express.static(path.join(__dirname,'www')));
-const portListen = 8080;
+const portListen = 3123;
 server.listen(portListen);
 
 //buat socket event
@@ -44,8 +43,10 @@ io.on('connection',(socket)=>{
     console.log('New client connected '+clientCount);
     parser.on('data',(data)=>{
         let hasilParsing = parsingRawData(data);
-        socket.emit('socketData',{dataHasil : hasilParsing});
+        let parsePort = portNumber;
+        socket.emit('socketData',{dataHasil : hasilParsing, dataPort : parsePort});
         socket.emit('dataCoordinate', {dataHasil : hasilParsing});
+        socket.emit('data3d', {dataHasil : hasilParsing});
         console.log(data);
     });
 })

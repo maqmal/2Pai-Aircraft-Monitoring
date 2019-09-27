@@ -1,71 +1,109 @@
 <html>
+
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>2Pai Aircraft Monitoring System</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
-        integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
-    <link rel="stylesheet" href="weather/css/main.css">
+    <!-- Scrollbar -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simplebar@latest/dist/simplebar.css">
+    <script src="https://cdn.jsdelivr.net/npm/simplebar@latest/dist/simplebar.min.js"></script>
     <!-- Highchart -->
     <script src="https://code.highcharts.com/highcharts.js"></script>
-
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
     <script src="//cdn.rawgit.com/Mikhus/canvas-gauges/gh-pages/download/2.1.5/all/gauge.min.js"></script>
+    <!-- 3D model -->
+    <script src="3d/three.js"></script>
+    <script src="3d/orbitcontrolls.js"></script>
+    <script src="3d/trackballcontrolls.js"></script>
+    <script src="3d/colladaloader.js"></script>
     <style>
-        body{
-            background-color: #15151e;
+        body {
+            background-color: #000000;
         }
         #map {
-        height: 100%;
-      }
+            width: 70%;
+        }
     </style>
 </head>
- 
-<body onload="RealTimeData();startTime();mapUpdate();">
+
+<body onload="RealTimeData();startTime();mapUpdate();TdModel();">
+<div data-simplebar>
     <nav class="navbar navbar-light bg-dark">
-        <span class="navbar-brand mb-0 h1 display-3" style="color:white">2PaiAirlines</span>
-        <h3 class="display-3" id="date" style="color:white; font-size: 21px;"></h3>
-        <div class="loader"></div>
-        <p id="cuaca" class="display-3" style="color:white; font-size: 16px;"></p>
-        <div class="loader"></div>
+        <span class="navbar-brand mb-0 h1 display-3" style="color:rgb(255, 199, 96); letter-spacing: 3px;">2PaiAirlines
+            <div id="success" style="color:rgb(255, 199, 96);font-size: 11px;"></div>
+        </span>
+        <span class="display-3" id="date" style="color:white; font-size: 21px;letter-spacing: 1px; margin-left:-100px;"></span>
+        <div>
+            <div id="temp" style="color:white;font-size: 16px; margin-top: 14px;letter-spacing: 1px;"  class="display-3"></div>
+            <p id="cuaca" class="display-3" style="color:white; font-size: 16px;letter-spacing: 1px;"></p>
+        </div>
         <div class="city-icon" style="color:white">
-            <div class="city-icon-holder" style="color:white; padding-top: -12px;">
-                <div id="city-name" class="display-3" style="color:white; font-size: 17px;"></div>
+            <div class="city-icon-holder" style="color:white; padding-top: -12px; text-align: center">
+                <div id="city-name" class="display-3" style="color:white; font-size: 18px;text-align: center"></div>
                 <img src="" alt="" id="icon" style="color:white">
-                <div id="desc-div" style="color:white;"></div>
+                <div id="desc-div" class="display-3" style="color:white;font-size: 17px;text-align: center"></div>
             </div>
         </div>
-        <div class="temperature" style="color:white;">
-            <h3 class="display-3" style="color:white; font-size: 16px;"></h3>
-            <div id="temp" style="color:white;"></div>
-        </div>
-
         <button onclick="getLocation()" type="button" class="btn btn-secondary">Refresh Cuaca</button>
     </nav>
-    <div class="container" style="text-align:center;">
-        <h3 class="display-4" id="success" style="color:white;"></h3>
-        <div style="text-align:center;">
-            <div id="DataRecive" style="color:white;"></div>
-        </div>
-
-        <div id="chartHumid"></div>
-        <div id="chartTemp"></div>
-
-        <canvas id="gauge-temp"></canvas>
-        <canvas id="gauge-humid"></canvas>
-
-        <div id="map"></div>
-        <div id="mapTes"></div>
+    <br> 
+    <div class="container-fluid align-items-center">
+        <table class="table table-dark table-borderless">
+            
+            <tr>
+                <th id="map" scope="col"></th>
+                <th scope="col">
+                    <canvas id="gauge-humid" style="margin-left:100px;"></canvas>
+                    <br><br><br>
+                    <canvas id="gauge-temp" style="margin-bottom:75px; margin-left:10px;"></canvas>
+                    <div id="3D"></div>
+                </th>
+            </tr>
+            <tr>
+                <td id="gyroX"></td>
+            </tr>
+        </table>
     </div>
 
+    <div id="3D"></div>
+
+    <div class="container-fluid" style="text-align:center;">
+        <div class="row">
+            <br>
+            <div id="chartHumid" class="col h-100"></div>
+            <br>
+            <div id="chartTemp" class="col h-100"></div>
+        </div>
+        <br>
+        <div class="row">
+            <div id="chartAcc_X" class="col h-100"></div>
+            <br>
+            <div id="chartAcc_Y" class="col h-100"></div>
+            <br>
+            <div id="chartAcc_Z" class="col h-100"></div>
+        </div>
+        <br>
+        <div class="row">
+            <div id="chartGyro_X" class="col h-100"></div>
+            <br>
+            <div id="chartGyro_Y" class="col h-100"></div>
+            <br>
+            <div id="chartGyro_Z" class="col h-100"></div>
+        </div>
+    </div>
+
+</div>
     <script>
-        function startTime(){
+        function startTime() {
             var today = new Date();
             var weekday = new Array(7);
-            weekday[0] =  "Sun";
+            weekday[0] = "Sun";
             weekday[1] = "Mon";
             weekday[2] = "Tue";
             weekday[3] = "Wed";
@@ -73,7 +111,7 @@
             weekday[5] = "Fri";
             weekday[6] = "Sat";
             var hari = weekday[today.getDay()];
-            var m = today.getMonth() + 1;
+            var m = today.getMonth();
             var jam = today.getHours();
             var menit = today.getMinutes();
             menit = checkTime(menit);
@@ -82,16 +120,21 @@
             ];
             var m = monthArr[m];
             var d = today.getDate();
-            document.getElementById("date").innerHTML =  jam+":"+menit+"<br>"+hari+ ", "+ m + " " + +d + " ";
+            document.getElementById("date").innerHTML = jam + ":" + menit + " " + hari + ", " + m + " " + +d +
+                " ";
             var t = setTimeout(startTime, 500);
         }
+
         function checkTime(i) {
-            if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+            if (i < 10) {
+                i = "0" + i
+            }; // add zero in front of numbers < 10
             return i;
         }
     </script>
     <!-- google maps -->
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyANkLfRNm2-1tREG2vlxL6MRpNJXGszb5M&callback=initMap">
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyANkLfRNm2-1tREG2vlxL6MRpNJXGszb5M&callback=initMap">
     </script>
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
@@ -102,7 +145,10 @@
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
     </script>
 
+    <!-- 3D model -->
+    <script src="app/3dmodel.js"></script>
     <!--Data js-->
+    <script src="/index.js"></script>
     <script src="app/map.js"></script>
     <script src="weather/js/index.js"></script>
     <script src="app/data.js"></script>
